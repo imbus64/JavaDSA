@@ -29,6 +29,20 @@ public class LinkedList<T> implements Iterable<T> {
         }
     }
 
+    public void insert_at(T data, Integer index) {
+        if(this.head == null) return;
+        ListNode<T> current = this.head;
+
+        for(Integer i = index; i >= 0; i--) {
+            if(current.next == null) return;
+            current = current.next;
+        }
+
+        ListNode<T> newnode = new ListNode<T>(data);
+        current.next.prev = newnode;
+        current.next = newnode;
+    }
+
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
