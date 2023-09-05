@@ -1,4 +1,4 @@
-package java_sabotage;
+package sample_project;
 
 import java.util.Iterator;
 
