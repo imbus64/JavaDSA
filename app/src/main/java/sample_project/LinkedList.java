@@ -14,33 +14,97 @@ class ListNode<T> {
     T data;
 }
 
+// Doubly linked list
 public class LinkedList<T> implements Iterable<T> {
     ListNode<T> head;
     ListNode<T> tail;
+    Integer length = 0;
 
     public void add(T data) {
-        ListNode<T> node = new ListNode<T>(data);
-        if (this.head == null) {
-            this.head = node;
-            this.tail = node;
-        } else {
-            this.tail.next = node;
-            this.tail = node;
+        this.insert_after(this.tail, data);
+    }
+
+    public void add(int index, T data) {
+        this.insert_at(index, data);
+    }
+
+    public boolean is_empty() {
+        return this.head == null;
+    }
+
+    public int size() {
+        return this.length;
+    }
+
+    public void clear() {
+        // Heavily reliant on GC
+        this.head = null;
+        this.tail = null;
+        this.length = 0;
+    }
+
+    public void fromArray(T[] array) {
+        for (T data : array) {
+            this.insert_after(this.tail, data);
         }
     }
 
-    public void insert_at(T data, Integer index) {
-        if(this.head == null) return;
-        ListNode<T> current = this.head;
+    void insert_after(ListNode<T> node, T data) {
+        ListNode<T> newnode = new ListNode<T>(data);
 
-        for(Integer i = index; i >= 0; i--) {
-            if(current.next == null) return;
-            current = current.next;
+        if (this.is_empty()) {
+            this.head = newnode;
+            this.tail = newnode;
+            this.length += 1;
+            return;
         }
 
+        newnode.next = node.next;
+        newnode.prev = node;
+        node.next = newnode;
+        if (newnode.next != null)
+            newnode.next.prev = newnode;
+        if (this.tail == node)
+            this.tail = newnode;
+        this.length += 1;
+    }
+
+    void insert_before(ListNode<T> node, T data) {
         ListNode<T> newnode = new ListNode<T>(data);
-        current.next.prev = newnode;
-        current.next = newnode;
+        newnode.next = node;
+        newnode.prev = node.prev;
+        node.prev = newnode;
+        if (newnode.prev != null)
+            newnode.prev.next = newnode;
+        if (this.head == node)
+            this.head = newnode;
+        this.length += 1;
+    }
+
+    // Makes a node containing T data and inserts it at index
+    // Conceptually shifts all nodes after index to the right
+    // If index is out of bounds, does nothing
+    void insert_at(Integer index, T data) {
+        // Bounds checking and early returns, not throwing exceptions
+        if (index == null || index < 0 || index > this.size())
+            return;
+
+        if (index == this.size())
+            this.insert_after(this.tail, data);
+        else
+            this.insert_before(this.get_node_at_index(index), data);
+    }
+
+    // May return null for now
+    ListNode<T> get_node_at_index(Integer index) {
+        if (this.is_empty() || index == null || index > this.size() - 1)
+            return null;
+
+        ListNode<T> cursor = this.head;
+        for (Integer i = 0; i < index; i++)
+            cursor = cursor.next;
+
+        return cursor;
     }
 
     @Override
