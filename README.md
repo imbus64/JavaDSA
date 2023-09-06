@@ -1,4 +1,4 @@
-# Java Sample Application
+# JavaDSA
 
 ## Run/Test
 
